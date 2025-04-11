@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Developer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #0f2027;
+            --secondary-color: #2c5364;
+            --bg-gradient: linear-gradient(to right, #892549, #d8d7dd);
+            --card-bg: #ffffff;
+            --text-color: #222;
+            --muted-text: #555;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .profile-pic {
+            border-radius: 50%;
+            border: 4px solid #e0e0e0;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 10px 0 5px;
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+
+        p.email {
+            font-size: 16px;
+            color: var(--muted-text);
+            margin-bottom: 30px;
+        }
+
+        .content {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .content h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .content p {
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        .logout-btn {
+            margin-top: 30px;
+            display: inline-block;
+            background-color: #ff5e57;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard" id="user-card">
+    <h2>Loading user info...</h2>
+</div>
+
+<script>
+    fetch('/api/user')
+        .then(res => {
+            if (!res.ok) throw new Error("Unauthorized");
+            return res.json();
+        })
+        .then(data => {
+            const card = document.getElementById('user-card');
+            card.innerHTML = `
+                <img class="profile-pic" src="${data.picture || ''}" alt="Profile Picture">
+                <h1>${data.name || 'Java Developer'}</h1>
+                <p class="email">${data.email || ''}</p>
+
+                <div class="content">
+                    <h2>Welcome to Your Java Developer Dashboard</h2>
+                    <p>
+                        You are now logged in using OAuth 2.0 authentication with Spring Boot.
+                        This dashboard is tailored for backend developers who focus on building scalable, secure, and robust Java applications.
+                    </p>
+                    <p>
+                        Explore services, integrate microservices, and enhance your software architecture skills — all from a central place.
+                    </p>
+                </div>
+
+                <a class="logout-btn" href="/logout">Logout</a>
+            `;
+        })
+        .catch(() => {
+            document.getElementById('user-card').innerHTML =
+                '<p>Failed to load user info. Please try again.</p>';
+        });
+</script>
+
+</body>
+</html>
